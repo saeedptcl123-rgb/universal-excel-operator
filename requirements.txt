@@ -1,0 +1,10 @@
+streamlit
+openpyxl
+openai
+pdfplumber
+python-docx
+pytesseract
+pillow
+reportlab
+arabic-reshaper
+python-bidi
