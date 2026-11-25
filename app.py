@@ -1432,8 +1432,8 @@ def process_progress(activity_lines, template_bytes):
             results.append((len(assigned), acts, assigned))
         best_idx = 0
         for i, (score, _, _) in enumerate(results):
-            # برابر میچ ہوں تو بعد والا بلاک (زیادہ تازہ رپورٹ) لیا جاتا ہے
-            if score >= results[best_idx][0]:
+            # برابر میچ ہوں تو پہلا بلاک لیا جاتا ہے (پچھلے درست نتیجے والا رویہ)
+            if score > results[best_idx][0]:
                 best_idx = i
         best_score, acts, assigned = results[best_idx]
         for i, (score, other, _) in enumerate(results):
