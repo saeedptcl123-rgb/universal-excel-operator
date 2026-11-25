@@ -565,17 +565,13 @@ def append_rows(ws, dict_rows):
     نئی قطاریں آخر میں جوڑتا ہے۔ ہر قطار کا رنگ/فارمیٹ آخری ڈیٹا قطار سے لیتا ہے،
     تاکہ موجودہ فارمیٹ خراب نہ ہو۔
     """
-<<<<<<< HEAD
     from openpyxl.formula.translate import Translator
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     headers = _sheet_headers(ws)
     last = _last_data_row(ws)
     for i, d in enumerate(dict_rows):
         r = last + 1 + i
         for c, name in enumerate(headers, 1):
             cell = ws.cell(r, c)
-<<<<<<< HEAD
             val = d.get(name)
             if val in (None, '') and last >= 2:
                 srcv = ws.cell(last, c).value
@@ -583,9 +579,6 @@ def append_rows(ws, dict_rows):
                     # خالی خانہ: آخری قطار کا فارمولا نئی قطار کے مطابق نقل ہوتا ہے
                     val = Translator(srcv, origin=ws.cell(last, c).coordinate).translate_formula(cell.coordinate)
             cell.value = _coerce(val)
-=======
-            cell.value = _coerce(d.get(name))
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             if last >= 2:
                 cell._style = copy(ws.cell(last, c)._style)
             if isinstance(cell.value, float):
@@ -702,11 +695,8 @@ reconcile KEY                               ← دوسری فائل سے موا�
 consolidate GROUP sum COL1,COL2             ← شیٹ "Consolidated" (SUMIFS فارمولے)
 merge                                       ← اپلوڈ کی گئی باقی فائلوں کی قطاریں جوڑیں
 rename column OLD to NEW                    ← کالم کا نام بدلیں
-<<<<<<< HEAD
 format RANGE [fill=HEX] [font_color=HEX] [bold] [italic] [font=NAME] [size=N] [align=left|center|right] [number=FMT] [border=thin|medium|thick|none]
                                            ← RANGE: A1:E1 | row 3 | col C | header (پہلی قطار)
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 help                                        ← یہی مدد"""
 
 _OP_TOKENS = r'(=|!=|>=|<=|>|<|contains)'
@@ -750,7 +740,6 @@ def _copy_row_style(ws, src_row, dst_row, ncol):
         ws.cell(dst_row, c)._style = copy(ws.cell(src_row, c)._style)
 
 
-<<<<<<< HEAD
 _REF_RE = re.compile(r"(?<![A-Za-z0-9_\"'!])(\$?)([A-Z]{1,3})(\$?)([0-9]+)(?![0-9A-Za-z_(])")
 
 
@@ -816,10 +805,6 @@ def _strip_formulas(rows):
 def _insert_row(ws, n, values):
     ws.insert_rows(n)
     _remap_formulas(ws, row_map=_shift_rows_map(n))
-=======
-def _insert_row(ws, n, values):
-    ws.insert_rows(n)
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     ncol = ws.max_column
     neighbour = n - 1 if n > 2 else n + 1
     _copy_row_style(ws, neighbour, n, ncol)
@@ -828,10 +813,7 @@ def _insert_row(ws, n, values):
         for i, h in enumerate(headers, 1):
             if h.lower() == name.lower():
                 ws.cell(n, i).value = v
-<<<<<<< HEAD
     _fill_formulas_from_neighbour(ws, n, neighbour, ncol)
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     return f"قطار {n} پر نئی قطار ڈالی گئی۔"
 
 
@@ -841,10 +823,7 @@ def _add_column(ws, name, at=None):
         at = ncol + 1
     else:
         ws.insert_cols(at)
-<<<<<<< HEAD
         _remap_formulas(ws, col_map=_shift_rows_map(at))
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     src = at - 1 if at > 1 else at + 1
     ws.cell(1, at).value = name
     ws.cell(1, at)._style = copy(ws.cell(1, src)._style)
@@ -876,10 +855,7 @@ def _delete_where(ws, col_name, op, val):
     rows = [r for r in range(2, _last_data_row(ws) + 1) if _match(ws.cell(r, ci).value, op, val)]
     for r in reversed(rows):
         ws.delete_rows(r)
-<<<<<<< HEAD
     _remap_formulas(ws, row_map=_deleted_rows_map(rows))
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     return f"{len(rows)} قطاریں حذف ہوئیں۔"
 
 
@@ -891,11 +867,7 @@ def _sort(ws, col_name, desc=False):
     for r in range(2, last + 1):
         vals = [ws.cell(r, c).value for c in range(1, ncol + 1)]
         styles = [copy(ws.cell(r, c)._style) for c in range(1, ncol + 1)]
-<<<<<<< HEAD
         records.append((vals, styles, r))
-=======
-        records.append((vals, styles))
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
     def key(rec):
         v = rec[0][ci - 1]
@@ -905,7 +877,6 @@ def _sort(ws, col_name, desc=False):
         return (0, n, '') if isinstance(n, float) else (1, 0.0, n)
 
     records.sort(key=key, reverse=desc)
-<<<<<<< HEAD
     from openpyxl.formula.translate import Translator
     from openpyxl.utils import get_column_letter
     for i, (vals, styles, old_r) in enumerate(records, 2):
@@ -915,11 +886,6 @@ def _sort(ws, col_name, desc=False):
                 L = get_column_letter(c)
                 v = Translator(v, origin=f"{L}{old_r}").translate_formula(f"{L}{i}")
             ws.cell(i, c).value = v
-=======
-    for i, (vals, styles) in enumerate(records, 2):
-        for c in range(1, ncol + 1):
-            ws.cell(i, c).value = vals[c - 1]
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             ws.cell(i, c)._style = styles[c - 1]
     return f"{len(records)} قطاریں '{col_name}' کے مطابق ترتیب دی گئیں۔"
 
@@ -961,7 +927,6 @@ def _reconcile(wb, ws, src_ws, key_name):
     return "ری کنسائل مکمل: " + "، ".join(f"{k}: {v}" for k, v in counts.items())
 
 
-<<<<<<< HEAD
 def _hex_color(v):
     if v is None or str(v).strip() == '':
         return None
@@ -1078,8 +1043,6 @@ def _parse_format_command(text):
     return rng, kw
 
 
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 def run_command(line, wb, extras):
     """
     ایک کمانڈ چلاتا ہے۔ Returns (ok, message).
@@ -1148,11 +1111,7 @@ def run_command(line, wb, extras):
             total = 0
             for ex in extras:
                 _, rows = _table(ex.worksheets[0])
-<<<<<<< HEAD
                 total += append_rows(ws, _strip_formulas(rows))
-=======
-                total += append_rows(ws, rows)
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             return True, f"{total} قطاریں ملا دی گئیں۔"
 
         m = re.match(r'^rename column (.+?) to (.+)$', text, re.I)
@@ -1161,14 +1120,11 @@ def run_command(line, wb, extras):
             ws.cell(1, ci).value = m.group(2).strip()
             return True, "کالم کا نام بدل دیا گیا۔"
 
-<<<<<<< HEAD
         if low.startswith('format '):
             rng, kw = _parse_format_command(text)
             n = apply_format(ws, rng, **kw)
             return True, f"{n} خانوں کی فارمیٹنگ بدل دی گئی۔"
 
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
         return False, "یہ کمانڈ سمجھ نہیں آئی۔ مدد کے لیے 'help' لکھیں۔"
     except Exception as e:
         return False, f"خامی: {e}"
@@ -1285,27 +1241,20 @@ def parse_activities(lines):
     for s in lines:
         cm = _PROG_CODE_RE.match(s)
         pm = _PROG_PCT_RE.search(s)
-<<<<<<< HEAD
         if not pm:
             continue
         if cm:
-=======
-        if cm and pm:
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             acts.append({
                 'letter': cm.group(1),
                 'code': f"{cm.group(1)}{cm.group(2)}.{cm.group(3)}",
                 'desc': _clean_desc(s[cm.end():pm.start()]),
                 'pct': float(pm.group(1)),
             })
-<<<<<<< HEAD
         else:
             # کوڈ کے بغیر رپورٹ (مثلاً "Backfilling (50% completed)")
             desc = _clean_desc(s[:pm.start()])
             if desc:
                 acts.append({'letter': None, 'code': '', 'desc': desc, 'pct': float(pm.group(1))})
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     return acts
 
 
@@ -1398,11 +1347,7 @@ def _match_block(ws, hr, last, desc_col, sections, header_rows, acts):
         for r, v, sec in cand:
             if r in used:
                 continue
-<<<<<<< HEAD
             if same_section_only and a['letter'] and sec != a['letter']:
-=======
-            if same_section_only and sec != a['letter']:
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
                 continue
             sc = _sim(a['desc'], v)
             if sc > best_s:
@@ -1487,12 +1432,8 @@ def process_progress(activity_lines, template_bytes):
             results.append((len(assigned), acts, assigned))
         best_idx = 0
         for i, (score, _, _) in enumerate(results):
-<<<<<<< HEAD
             # برابر میچ ہوں تو بعد والا بلاک (زیادہ تازہ رپورٹ) لیا جاتا ہے
             if score >= results[best_idx][0]:
-=======
-            if score > results[best_idx][0]:
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
                 best_idx = i
         best_score, acts, assigned = results[best_idx]
         for i, (score, other, _) in enumerate(results):
@@ -1504,11 +1445,7 @@ def process_progress(activity_lines, template_bytes):
         for i, a in enumerate(acts):
             r = assigned.get(i)
             if r is None:
-<<<<<<< HEAD
                 unmatched.append(f"{d.strftime('%d-%b-%y')} | {a['code']} {a['desc']} ({a['pct']:g}%)".replace('  ', ' ').strip())
-=======
-                unmatched.append(f"{d.strftime('%d-%b-%y')} | {a['code']} {a['desc']} ({a['pct']:g}%)")
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
                 continue
             cell = ws.cell(r, date_col)
             cell.value = a['pct'] / 100.0
@@ -1529,7 +1466,6 @@ def process_progress(activity_lines, template_bytes):
 
 
 def render_progress_ui():
-<<<<<<< HEAD
     st.info("ایکٹیویٹی رپورٹ (ہر قسم کی فائلیں، ایک یا زیادہ) اور ٹیمپلیٹ (xlsx، PDF، Word یا تصویر) اپلوڈ کریں۔ رپورٹ میں جتنی بھی 'Date:' لائنیں ہوں گی، ہر تاریخ کے فیصد ٹیمپلیٹ میں اسی تاریخ کے کالم میں لکھے جائیں گے۔ نتیجہ ہمیشہ xlsx فائل ہوگی۔")
     up_rep = st.file_uploader("ایکٹیویٹی رپورٹ (txt, csv, xlsx, pdf, docx, تصویر، ایک یا زیادہ)", type=_RAW_TYPES,
                               accept_multiple_files=True, key="prog_txt")
@@ -1566,15 +1502,6 @@ def render_progress_ui():
             st.error(str(e))
         if st.button("تمام تاریخوں کے فیصد لکھیں") and lines and tpl_bytes:
             res, messages, unmatched = process_progress(lines, tpl_bytes)
-=======
-    st.info("ایکٹیویٹی رپورٹ (.txt) اور ٹیمپلیٹ (.xlsx) اپلوڈ کریں۔ رپورٹ میں جتنی بھی 'Date:' لائنیں ہوں گی، ہر تاریخ کے فیصد ٹیمپلیٹ میں اسی تاریخ کے کالم میں لکھے جائیں گے۔")
-    up_txt = st.file_uploader("ایکٹیویٹی رپورٹ (.txt)", type=["txt"], key="prog_txt")
-    up_tpl = st.file_uploader("ٹیمپلیٹ (.xlsx)", type=["xlsx"], key="prog_tpl")
-    if up_txt and up_tpl:
-        lines = _read_text(up_txt.getvalue()).splitlines()
-        if st.button("تمام تاریخوں کے فیصد لکھیں"):
-            res, messages, unmatched = process_progress(lines, up_tpl.getvalue())
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             for m in messages:
                 if m.startswith("✅"):
                     st.success(m)
@@ -1582,7 +1509,6 @@ def render_progress_ui():
                     st.info(m)
                 else:
                     st.error(m)
-<<<<<<< HEAD
             if res is not None and up_style is not None:
                 try:
                     styled = apply_style_template(res.getvalue(), up_style.getvalue())
@@ -1591,25 +1517,15 @@ def render_progress_ui():
                 except Exception as e:
                     st.error(f"فارمیٹ ٹیمپلیٹ لگانے میں خامی: {e}")
             if res is not None:
-=======
-            if res is None:
-                pass
-            else:
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
                 if unmatched:
                     st.warning("یہ ایکٹیویٹیاں ٹیمپلیٹ میں نہیں ملیں:")
                     for u in unmatched:
                         st.write("• " + u)
                 st.download_button("📥 پروگریس والی فائل ڈاؤن لوڈ کریں", res, "Progress_Updated.xlsx",
                                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-<<<<<<< HEAD
                 _pdf_download_button(res.getvalue(), "Progress_Updated.pdf", "📄 پروگریس PDF میں ڈاؤن لوڈ کریں", "prog_pdf")
     else:
         st.warning("رپورٹ اور ٹیمپلیٹ دونوں اپلوڈ کریں۔")
-=======
-    else:
-        st.warning("دونوں فائلیں اپلوڈ کریں۔")
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
 
 # ==========================================
@@ -1618,16 +1534,10 @@ def render_progress_ui():
 import json as _json
 import os as _os
 
-<<<<<<< HEAD
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 # ماڈل کا نام Groq کنسول کے Models صفحے سے دیکھیں؛ GROQ_MODEL ماحول کے متغیر سے بدلا جا سکتا ہے
 GROQ_DEFAULT_MODEL = _os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 AGENT_MAX_STEPS = 60
-=======
-XAI_BASE_URL = _os.environ.get("XAI_BASE_URL", "https://api.x.ai/v1")
-XAI_DEFAULT_MODEL = _os.environ.get("XAI_MODEL", "grok-4")  # کنسول میں دستیاب ماڈل کا درست نام یہاں یا XAI_MODEL میں لکھیں
-AGENT_MAX_STEPS = 25
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
 AGENT_SYSTEM = """آپ ایک ماہر ایکسل آپریٹر ہیں۔ آپ کو صارف کی ہدایت پر ایکسل فائل میں کام کرنا ہے۔
 اصول:
@@ -1636,15 +1546,10 @@ AGENT_SYSTEM = """آپ ایک ماہر ایکسل آپریٹر ہیں۔ آپ ک�
 3. ڈیٹا بدلنے سے پہلے read_range سے اسے دیکھیں۔
 4. جوڑ، ٹوٹل وغیرہ کے لیے فارمولے استعمال کریں، ٹیکسٹ نہیں۔ نمبر کو نمبر ہی لکھیں۔
 5. موجودہ فارمیٹ نہ بگاڑیں۔ اصل شیٹ کو صرف ضرورت کے مطابق بدلیں۔
-<<<<<<< HEAD
 6. اگر صارف کہے کہ خود فیصلہ کرو، یا ہدایت میں تھوڑی کمی ہو، تو سوال نہ پوچھیں۔ فائل کے ڈھانچے اور موجودہ ڈیٹا کو دیکھ کر معقول فیصلہ خود کریں، اور summary میں بتائیں کہ کیا فیصلہ کیا۔
 7. سوال صرف اس وقت پوچھیں جب فائل میں ضروری کالم ہی نہ ہو اور کام ممکن نہ ہو۔
 9. کسی شیٹ میں دوسری فائل/شیٹ سے ڈیٹا جمع (compile) کرتے وقت وہی قطار دوبارہ نہ ڈالیں۔ جمع کرنے کے بعد remove_duplicates کے ساتھ کلیدی کالم (مثلاً ID) دے کر ڈپلیکیٹ ہٹائیں، اور summary میں لکھیں کہ کتنی قطاریں آئیں۔
 8. کام ختم ہونے پر finish کال کریں، summary میں اردو میں بتائیں کہ کیا کیا بدلا۔ summary صرف سادہ اردو متن ہو، JSON یا کوڈ نہیں۔"""
-=======
-6. اگر ہدایت واضح نہ ہو یا کوئی کالم نہ ملے تو کام نہ کریں، finish کے summary میں سوال لکھیں۔
-7. کام ختم ہونے پر finish کال کریں، summary میں اردو میں بتائیں کہ کیا کیا بدلا۔"""
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
 
 def _jsonable(v):
@@ -1655,7 +1560,6 @@ def _jsonable(v):
     return str(v)
 
 
-<<<<<<< HEAD
 def _row_key_value(ws, r, c):
     """قطار کی پہچان کے لیے قیمت؛ فارمولا ہو تو اسے ایک مشترک قطار میں لا کر موازنہ ہوتا ہے۔"""
     from openpyxl.formula.translate import Translator
@@ -1667,8 +1571,6 @@ def _row_key_value(ws, r, c):
     return _norm(v)
 
 
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 class AgentWorkbook:
     """ایجنٹ کے ٹولز: ہر ٹول openpyxl پر ایک محفوظ عمل ہے۔"""
 
@@ -1795,11 +1697,7 @@ class AgentWorkbook:
     def merge_sheet(self, sheet=None, source_sheet=""):
         ws = self._ws(sheet)
         _, rows = _table(self._ws(source_sheet))
-<<<<<<< HEAD
         return f"{append_rows(ws, _strip_formulas(rows))} قطاریں ملائی گئیں"
-=======
-        return f"{append_rows(ws, rows)} قطاریں ملائی گئیں"
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
     def reconcile(self, sheet=None, other_sheet="", key=""):
         return _reconcile(self.wb, self._ws(sheet), self._ws(other_sheet), str(key))
@@ -1820,7 +1718,6 @@ class AgentWorkbook:
         ws.freeze_panes = 'A2'
         return f"شیٹ '{ws.title}' بن گئی ({len(rows or [])} قطاریں)"
 
-<<<<<<< HEAD
     def format_cells(self, sheet=None, cell_range="A1", fill=None, font_color=None, bold=None,
                      italic=None, font_name=None, font_size=None, align=None, number_format=None, border=None):
         ws = self._ws(sheet)
@@ -2138,8 +2035,6 @@ class AgentWorkbook:
         ws.add_chart(chart, str(anchor))
         return f"{kind} چارٹ {anchor} پر شامل ہوا"
 
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     def call(self, name, args):
         method = getattr(self, name, None)
         if name.startswith('_') or method is None or not callable(method):
@@ -2191,7 +2086,6 @@ AGENT_TOOLS = [
     _tool("create_sheet", "نئی شیٹ بنائیں جس میں ہیڈر اور قطاریں ہوں",
           {"name": _S, "headers": {"type": "array", "items": _S},
            "rows": {"type": "array", "items": {"type": "array"}}}, ["name", "headers"]),
-<<<<<<< HEAD
     _tool("format_cells", "خانوں کا بیک گراؤنڈ رنگ (fill)، فونٹ کا رنگ، نام، سائز، بولڈ/ترچھا اور الائنمنٹ بدلیں۔ "
           "cell_range مثلاً 'A1:E1' یا 'row 1' (ہیڈر کے لیے 'row 1')؛ رنگ 6 ہندسوں کا ہیکس کوڈ جیسے FFFF00",
           {"sheet": _SHEET, "cell_range": {"type": "string"}, "fill": {"type": "string", "description": "بیک گراؤنڈ ہیکس رنگ یا none"},
@@ -2256,14 +2150,11 @@ AGENT_TOOLS = [
           {"sheet": _SHEET, "kind": _S, "category_column": _S,
            "value_columns": {"type": "array", "items": _S}, "title": _S, "anchor": _S},
           ["category_column", "value_columns"]),
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
     _tool("finish", "کام ختم، summary میں اردو میں بتائیں کہ کیا ہوا (یا سوال)",
           {"summary": _S}, ["summary"]),
 ]
 
 
-<<<<<<< HEAD
 def _combine_workbooks(files):
     """
     ایک یا زیادہ ایکسل فائلیں ایک ورک بک میں۔ پہلی فائل بنیاد ہے؛ باقی فائلوں کی شیٹیں
@@ -2414,14 +2305,6 @@ def _keep_one_output_sheet(wb, source_titles):
             del wb[t]
     wb.active = wb.sheetnames.index(keep)
     return wb, kept_extra
-=======
-def _make_client():
-    key = _os.environ.get("XAI_API_KEY", "").strip()
-    if not key:
-        raise ValueError("XAI_API_KEY ماحول میں نہیں ملی۔ اسے سیٹ کریں، کوڈ میں نہ لکھیں۔")
-    import openai
-    return openai.OpenAI(api_key=key, base_url=XAI_BASE_URL)
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
 
 def run_agent(instruction, wb, client=None, model=None, max_steps=AGENT_MAX_STEPS):
@@ -2429,7 +2312,6 @@ def run_agent(instruction, wb, client=None, model=None, max_steps=AGENT_MAX_STEP
     Returns: (summary, log). wb کو براہ راست بدلا جاتا ہے (UI میں کاپی بنا کر دیں)۔
     """
     client = client or _make_client()
-<<<<<<< HEAD
     model = model or GROQ_DEFAULT_MODEL
     aw = AgentWorkbook(wb)
     messages = [{"role": "system", "content": AGENT_SYSTEM},
@@ -2458,18 +2340,6 @@ def run_agent(instruction, wb, client=None, model=None, max_steps=AGENT_MAX_STEP
         tool_calls = getattr(msg, 'tool_calls', None) or []
         if not tool_calls:
             return (_clean_summary(msg.content) or "کوئی جواب نہیں ملا"), aw.log
-=======
-    model = model or XAI_DEFAULT_MODEL
-    aw = AgentWorkbook(wb)
-    messages = [{"role": "system", "content": AGENT_SYSTEM},
-                {"role": "user", "content": instruction}]
-    for _ in range(max_steps):
-        resp = client.chat.completions.create(model=model, messages=messages, tools=AGENT_TOOLS)
-        msg = resp.choices[0].message
-        tool_calls = getattr(msg, 'tool_calls', None) or []
-        if not tool_calls:
-            return (msg.content or "کوئی جواب نہیں ملا"), aw.log
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
         messages.append({"role": "assistant", "content": msg.content or "",
                          "tool_calls": [{"id": tc.id, "type": "function",
                                          "function": {"name": tc.function.name,
@@ -2482,11 +2352,7 @@ def run_agent(instruction, wb, client=None, model=None, max_steps=AGENT_MAX_STEP
             except ValueError:
                 args = {}
             if name == 'finish':
-<<<<<<< HEAD
                 return _clean_summary(args.get('summary', '')), aw.log
-=======
-                return args.get('summary', ''), aw.log
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             try:
                 result = aw.call(name, args)
                 aw.log.append(f"✅ {name} {args} → {result if isinstance(result, str) else 'ٹھیک'}")
@@ -2494,7 +2360,6 @@ def run_agent(instruction, wb, client=None, model=None, max_steps=AGENT_MAX_STEP
                 result = {"error": str(e)}
                 aw.log.append(f"❌ {name} {args} → {e}")
             messages.append({"role": "tool", "tool_call_id": tc.id,
-<<<<<<< HEAD
                              "content": _json.dumps(result, ensure_ascii=False, default=str)[:6000]})
     return "حد پوری ہو گئی، کام مکمل نہیں ہوا", aw.log
 # ==========================================
@@ -2967,10 +2832,6 @@ def apply_style_template(result_bytes, style_bytes):
     buf = io.BytesIO()
     out_wb.save(buf)
     return buf.getvalue()
-=======
-                             "content": _json.dumps(result, ensure_ascii=False, default=str)[:20000]})
-    return "حد پوری ہو گئی، کام مکمل نہیں ہوا", aw.log
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
 
 # ==========================================
@@ -3026,7 +2887,6 @@ elif app_mode == "🔵 موڈ 2: یونیورسل را ڈیٹا (فول پروف
 
     enable_total = st.checkbox("ٹیمپلیٹ میں Grand Total نہ ہو تو بھی نیچے ٹوٹل لگائیں")
 
-<<<<<<< HEAD
     uploaded_raw_gen = st.file_uploader("را ڈیٹا فائل (txt, csv, xlsx, pdf, docx, تصویر PNG/JPG)", type=_RAW_TYPES, key="gen_raw")
     uploaded_template_gen = st.file_uploader("ایکسل ٹیمپلیٹ (.xlsx)", type=["xlsx"], key="gen_temp")
 
@@ -3038,14 +2898,6 @@ elif app_mode == "🔵 موڈ 2: یونیورسل را ڈیٹا (فول پروف
         except ValueError as e:
             st.error(str(e))
             raw_lines = []
-=======
-    uploaded_raw_gen = st.file_uploader("را ڈیٹا فائل (.txt یا .csv)", type=["txt", "csv"], key="gen_raw")
-    uploaded_template_gen = st.file_uploader("ایکسل ٹیمپلیٹ (.xlsx)", type=["xlsx"], key="gen_temp")
-
-    if uploaded_raw_gen and uploaded_template_gen:
-        raw_lines = uploaded_raw_gen.getvalue().decode("utf-8-sig", errors="ignore").splitlines()
-        template_bytes = uploaded_template_gen.getvalue()
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
         mode, rows, text_count = prepare_rows(raw_lines)
         tcols = load_template_info(template_bytes)
 
@@ -3091,10 +2943,7 @@ elif app_mode == "🔵 موڈ 2: یونیورسل را ڈیٹا (فول پروف
                         "📥 فائنل پروسیس شدہ فائل ڈاؤن لوڈ کریں", res_file, "Processed_Data.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
-<<<<<<< HEAD
                     _pdf_download_button(res_file.getvalue(), "Processed_Data.pdf", "📄 نتیجہ PDF میں ڈاؤن لوڈ کریں", "mode2_pdf")
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
                 else:
                     st.error(msg)
     else:
@@ -3149,15 +2998,11 @@ elif app_mode == "🟣 موڈ 3: ایکسل ورک بینچ":
                     st.error(line)
             st.download_button("📥 نتیجہ فائل ڈاؤن لوڈ کریں", save_bytes(wb_work),
                                "Agent_Output.xlsx", mime=XLSX_MIME)
-<<<<<<< HEAD
             _pdf_download_button(save_bytes(wb_work).getvalue(), "Agent_Output.pdf", "📄 نتیجہ PDF میں ڈاؤن لوڈ کریں", "mode3_pdf")
-=======
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
 
 else:
     XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     st.subheader("🟠 AI ایجنٹ (Grok API)")
-<<<<<<< HEAD
     st.info("ہدایت اردو یا انگریزی میں لکھیں۔ ایجنٹ پہلے فائل کی ساخت دیکھتا ہے، پھر کام کرتا ہے۔ Groq API key ماحول کے متغیر GROQ_API_KEY میں ہونی چاہیے۔")
     if not _get_groq_key():
         st.warning("GROQ_API_KEY سیٹ نہیں ہے (.streamlit/secrets.toml میں یا ماحول میں)۔ ایجنٹ شروع نہیں ہوگا۔")
@@ -3190,27 +3035,12 @@ else:
             wb_ai, kept_src = _keep_one_output_sheet(wb_ai, src_titles)
             if kept_src:
                 st.info("فارمولے ان شیٹوں کا حوالہ دیتے ہیں اس لیے یہ شیٹیں بھی رکھی گئی ہیں: " + "، ".join(kept_src))
-=======
-    st.info("ہدایت اردو یا انگریزی میں لکھیں۔ ایجنٹ پہلے فائل کی ساخت دیکھتا ہے، پھر کام کرتا ہے۔ API key ماحول کے متغیر XAI_API_KEY میں ہونی چاہیے۔")
-    if not _os.environ.get("XAI_API_KEY", "").strip():
-        st.warning("XAI_API_KEY سیٹ نہیں ہے۔ ایجنٹ شروع نہیں ہوگا۔")
-
-    up_ai = st.file_uploader("ایکسل فائل (.xlsx)", type=["xlsx"], key="ai_file")
-    instr = st.text_area("ہدایت", height=120, key="ai_instr",
-                         placeholder="مثلاً: 20-Nov-26 کے کالم میں ہر ایکٹیویٹی کا فیصد لکھو")
-    if st.button("ایجنٹ چلائیں") and up_ai is not None and instr.strip():
-        try:
-            wb_ai = openpyxl.load_workbook(io.BytesIO(up_ai.getvalue()))
-            with st.spinner("ایجنٹ کام کر رہا ہے..."):
-                summary, log = run_agent(instr, wb_ai)
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
             st.markdown("### ایجنٹ کی کارروائی")
             for line in log:
                 st.write(line)
             st.success(summary)
             st.download_button("📥 نتیجہ فائل ڈاؤن لوڈ کریں", save_bytes(wb_ai),
                                "AI_Output.xlsx", mime=XLSX_MIME)
-<<<<<<< HEAD
             _pdf_download_button(save_bytes(wb_ai).getvalue(), "AI_Output.pdf", "📄 نتیجہ PDF میں ڈاؤن لوڈ کریں", "mode4_pdf")
         except Exception as e:
             st.error(f"خامی: {e}")
@@ -3218,9 +3048,3 @@ else:
         st.info("پہلے فائل اپلوڈ کریں یا کچا ڈیٹا پیسٹ کریں۔")
     elif not instr.strip():
         st.warning("ہدایت لکھیں، پھر ایجنٹ چلائیں۔")
-=======
-        except Exception as e:
-            st.error(f"خامی: {e}")
-    elif up_ai is None:
-        st.info("پہلے فائل اپلوڈ کریں۔")
->>>>>>> 1a3888f059dc75f376856c8a9b2b260bc8ecf9d7
